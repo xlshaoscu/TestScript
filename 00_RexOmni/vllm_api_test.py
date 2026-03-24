@@ -247,7 +247,7 @@ def main():
         logger.error("  --max-model-len 4096")
         return
 
-    image_path = "test.jpg"
+    image_path = "/home/s00964975/00_Software/Rex-Omni/tutorials/detection_example/test_images/boys.jpg"
     categories = ["person", "car", "dog"]
     task = "detection"
 
