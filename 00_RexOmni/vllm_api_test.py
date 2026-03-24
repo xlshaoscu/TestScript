@@ -83,7 +83,7 @@ def test_vllm_api(image_path, categories, task="detection"):
                 endpoint,
                 headers={"Content-Type": "application/json"},
                 data=json.dumps(payload_vllm),
-                timeout=30
+                timeout=300
             )
             logger.info(f"状态码: {response.status_code}")
             if response.status_code == 200:
