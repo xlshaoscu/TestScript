@@ -66,7 +66,7 @@ def test_vllm_api(image_path, categories, task="detection"):
     ]
 
     payload_openai = {
-        "model": "IDEA-Research/Rex-Omni",  # 模型名称，与启动时一致
+        "model": "/opt/data/models/IDEA-Research/Rex-Omni",  # 模型名称，与启动时一致
         "messages": messages_openai,
         "max_tokens": 2048,
         "temperature": 0.0,
@@ -167,7 +167,7 @@ def test_vllm_api(image_path, categories, task="detection"):
     ]
 
     payload_qwen = {
-        "model": "IDEA-Research/Rex-Omni",
+        "model": "/opt/data/models/IDEA-Research/Rex-Omni",
         "messages": messages_qwen,
         "max_tokens": 2048,
         "temperature": 0.0,
