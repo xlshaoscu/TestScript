@@ -36,7 +36,7 @@ def test_vllm_api(image_path, categories, task="detection"):
     """测试 VLLM API 调用"""
 
     # VLLM 服务器地址
-    base_url = "http://localhost:8091"
+    base_url = "http://127.0.0.1:8091"
 
     # 1. 转换图像为 base64
     image_base64 = image_to_base64(image_path)
@@ -194,7 +194,7 @@ def test_vllm_api(image_path, categories, task="detection"):
         logger.error(f"Qwen 格式调用异常: {e}")
 
     logger.error("所有方法都失败！请检查：")
-    logger.error("1. VLLM 服务器是否运行: curl http://localhost:8091/v1/models")
+    logger.error("1. VLLM 服务器是否运行: curl http://127.0.0.1:8091/v1/models")
     logger.error("2. 模型名称是否正确")
     logger.error("3. VLLM 是否支持多模态 API")
     logger.error("4. 查看 VLLM 服务器日志获取详细错误")
@@ -203,7 +203,7 @@ def test_vllm_api(image_path, categories, task="detection"):
 
 def check_server_status():
     """检查 VLLM 服务器状态"""
-    base_url = "http://localhost:8091"
+    base_url = "http://127.0.0.1:8091"
 
     logger.info("检查 VLLM 服务器状态...")
 
@@ -271,11 +271,11 @@ def main():
         logger.error("测试失败！")
 
     logger.info("附加调试命令:")
-    logger.info("1. 查看可用模型: curl http://localhost:8091/v1/models")
-    logger.info("2. 查看 API 文档: curl http://localhost:8091/docs")
-    logger.info("3. 查看 OpenAPI 规范: curl http://localhost:8091/openapi.json")
+    logger.info("1. 查看可用模型: curl http://127.0.0.1:8091/v1/models")
+    logger.info("2. 查看 API 文档: curl http://127.0.0.1:8091/docs")
+    logger.info("3. 查看 OpenAPI 规范: curl http://127.0.0.1:8091/openapi.json")
     logger.info("4. 测试纯文本请求:")
-    logger.info('   curl http://localhost:8091/v1/chat/completions \\')
+    logger.info('   curl http://127.0.0.1:8091/v1/chat/completions \\')
     logger.info('     -H "Content-Type: application/json" \\')
     logger.info('     -d \'{"model": "Rex-Omni", "messages": [{"role": "user", "content": "Hello"}], "max_tokens": 10}\'')
 
