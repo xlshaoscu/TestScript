@@ -13,6 +13,7 @@ model = LLM(
     max_model_len=4096,
     gpu_memory_utilization=0.8,
     tensor_parallel_size=1,
+    dtype=torch.float16,
 )
 
 processor = AutoProcessor.from_pretrained(
