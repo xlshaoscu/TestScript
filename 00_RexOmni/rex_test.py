@@ -18,7 +18,7 @@ model = LLM(
 processor = AutoProcessor.from_pretrained(
     model_path,
     min_pixels=16 * 28 * 28,
-    max_pixels=2560 * 28 * 28,
+    max_pixels=256 * 28 * 28,
 )
 
 # 2. 设置采样参数
@@ -46,7 +46,7 @@ messages = [
                 "type": "image",
                 "image": image,
                 "min_pixels": 16 * 28 * 28,
-                "max_pixels": 2560 * 28 * 28,
+                "max_pixels": 256 * 28 * 28,
             },
             {"type": "text", "text": "Detect person, car. Output the bounding box coordinates in [x0, y0, x1, y1] format."}
         ]
