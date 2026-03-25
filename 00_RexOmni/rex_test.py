@@ -2,6 +2,7 @@ from PIL import Image
 from transformers import AutoProcessor
 from vllm import LLM, SamplingParams
 from qwen_vl_utils import process_vision_info
+import torch
 
 # 1. 初始化 vLLM 模型
 model_path = "/opt/data/models/IDEA-Research/Rex-Omni"
