@@ -23,6 +23,7 @@ model = LLM(
     max_model_len=4096,
     gpu_memory_utilization=0.8,
     tensor_parallel_size=1,
+    enforce_eager=True,
     dtype=torch.float16,
 )
 
