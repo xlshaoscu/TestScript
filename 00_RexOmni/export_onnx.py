@@ -14,14 +14,30 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def get_device():
+    if torch.cuda.is_available():
+        return "cuda"
+    elif hasattr(torch, "npu") and torch.npu.is_available():
+        return "npu"
+    elif hasattr(torch, "mlu") and torch.mlu.is_available():
+        return "mlu"
+    else:
+        return "cpu"
+
+
 def export_to_onnx(model, output_path="./model.onnx", seq_len=512):
     logger.info("=" * 100)
     logger.info("开始导出 ONNX 模型...")
     logger.info("=" * 100)
 
-    model.eval()
+    device = get_device()
+    logger.info(f"检测到设备: {device}")
+    logger.info("注意: ONNX 导出将在 CPU 上进行，以确保兼容性")
 
-    dummy_input = torch.zeros(seq_len, dtype=torch.long, device="cuda")
+    model.eval()
+    model = model.cpu()
+
+    dummy_input = torch.zeros(seq_len, dtype=torch.long)
 
     try:
         with torch.no_grad():
@@ -53,11 +69,16 @@ def export_submodule_to_onnx(model, submodule_name, output_path="./submodule.onn
     logger.info(f"尝试导出子模块: {submodule_name}")
     logger.info("=" * 100)
 
+    device = get_device()
+    logger.info(f"检测到运行时设备: {device}")
+    logger.info("注意: ONNX 导出将在 CPU 上进行，以确保兼容性")
+
     for name, module in model.named_modules():
         if submodule_name in name:
             logger.info(f"找到子模块: {name} | 类型: {type(module).__name__}")
 
             module.eval()
+            module = module.cpu()
             dummy_input = torch.zeros(1, seq_len, 4096, dtype=torch.float16)
 
             try:
