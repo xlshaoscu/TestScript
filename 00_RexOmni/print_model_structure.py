@@ -24,7 +24,7 @@ def print_model_structure(model, output_file=None):
     logger.info("-" * 100)
 
     module_list = []
-    param_list = []
+    param_dict = {}
     for name, module in model.named_modules():
         params = sum(p.numel() for p in module.parameters())
         if params > 0:
@@ -39,14 +39,17 @@ def print_model_structure(model, output_file=None):
 
             for param_name, param in module.named_parameters():
                 full_param_name = f"{name}.{param_name}" if name else param_name
-                param_list.append({
-                    "name": full_param_name,
-                    "shape": list(param.shape),
-                    "dtype": str(param.dtype).split(".")[-1],
-                    "params": param.numel()
-                })
+                if full_param_name not in param_dict:
+                    param_dict[full_param_name] = {
+                        "name": full_param_name,
+                        "shape": list(param.shape),
+                        "dtype": str(param.dtype).split(".")[-1],
+                        "params": param.numel()
+                    }
 
+    param_list = list(param_dict.values())
     logger.info("=" * 100)
+    logger.info(f"去重后共 {len(param_list)} 个独立权重")
     logger.info("每层矩阵 Shape 信息:")
     logger.info("=" * 100)
     for p in param_list:
@@ -81,6 +84,7 @@ def print_model_structure(model, output_file=None):
                 f.write(f"{m['name']} | {m['type']} | 参数量: {m['params']:,} ({m['params_M']:.2f}M)\n")
             f.write("\n【每层矩阵 Shape 信息】\n")
             f.write("=" * 100 + "\n")
+            f.write(f"去重后共 {len(param_list)} 个独立权重\n")
             for p in param_list:
                 f.write(f"{p['name']} | shape: {p['shape']} | dtype: {p['dtype']} | 参数量: {p['params']:,}\n")
             f.write("\n【按模块类型统计】\n")
