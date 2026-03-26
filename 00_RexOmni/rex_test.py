@@ -5,6 +5,7 @@ from qwen_vl_utils import process_vision_info
 import torch
 import logging
 from msprobe.pytorch import PrecisionDebugger, seed_all
+import os
 
 
 os.environ["VLLM_ENABLE_V1_MULTIPROCESSING"] = "False"
