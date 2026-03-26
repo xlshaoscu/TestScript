@@ -7,6 +7,7 @@ import logging
 from msprobe.pytorch import PrecisionDebugger, seed_all
 
 
+os.environ["VLLM_ENABLE_V1_MULTIPROCESSING"] = "False"
 # 配置 logger
 logging.basicConfig(
     level=logging.INFO,
