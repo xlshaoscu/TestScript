@@ -84,7 +84,7 @@ llm_inputs = {
 print("*************************************")
 try:
     # 开启数据dump, 指定采集推理模型逐字符循环推理中的第1~3次
-    #debugger.start(model=model, token_range=[1, 100])
+    debugger.start(model=model)
     outputs = model.generate([llm_inputs], sampling_params=sampling_params)
 except Exception as e:
     # 关闭数据dump并落盘
