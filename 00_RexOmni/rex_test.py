@@ -98,8 +98,8 @@ try:
 except Exception as e:
     logger.exception(f" 生成文本时发生异常: {e}")
     # 关闭数据dump并落盘
-    debugger.stop()
-    debugger.step()
+    #debugger.stop()
+    #debugger.step()
 
 
 # 8. 获取结果
