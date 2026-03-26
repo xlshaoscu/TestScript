@@ -2,12 +2,6 @@ import os
 from PIL import Image
 from rex_omni import RexOmniWrapper, RexOmniVisualize
 
-os.environ["VLLM_USE_V1"] = "0"
-os.environ["VLLM_DISABLE_COMPILE"] = "1"
-#os.environ["ENFORCE_EAGER"] = "1"
-os.environ["ASCEND_GLOBAL_LOG_LEVEL"] = "3"
-os.environ["USE_FAST_IMAGE_PROCESSOR"] = "0"
-
 
 # Initialize model
 model = RexOmniWrapper(
