@@ -93,7 +93,7 @@ print("*************************************")
 try:
     # 开启数据dump, 指定采集推理模型逐字符循环推理中的第1~3次
     model_exec = model.llm_engine.model_executor.driver_worker.worker.model_runner.get_model()
-    debugger.start(model=model_exec)
+    #debugger.start(model=model_exec)
     outputs = model.generate([llm_inputs], sampling_params=sampling_params)
 except Exception as e:
     logger.exception(f" 生成文本时发生异常: {e}")
