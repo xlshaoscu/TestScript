@@ -24,6 +24,7 @@ def print_model_structure(model, output_file=None):
     logger.info("-" * 100)
 
     module_list = []
+    param_list = []
     for name, module in model.named_modules():
         params = sum(p.numel() for p in module.parameters())
         if params > 0:
@@ -35,6 +36,21 @@ def print_model_structure(model, output_file=None):
                 "params_M": params / 1_000_000
             })
             logger.info(f"{name} | {module_type} | 参数量: {params:,} ({params/1_000_000:.2f}M)")
+
+            for param_name, param in module.named_parameters():
+                full_param_name = f"{name}.{param_name}" if name else param_name
+                param_list.append({
+                    "name": full_param_name,
+                    "shape": list(param.shape),
+                    "dtype": str(param.dtype).split(".")[-1],
+                    "params": param.numel()
+                })
+
+    logger.info("=" * 100)
+    logger.info("每层矩阵 Shape 信息:")
+    logger.info("=" * 100)
+    for p in param_list:
+        logger.info(f"{p['name']} | shape: {p['shape']} | dtype: {p['dtype']} | 参数量: {p['params']:,}")
 
     logger.info("=" * 100)
     logger.info("按模块类型统计:")
@@ -59,10 +75,15 @@ def print_model_structure(model, output_file=None):
             f.write("=" * 100 + "\n")
             f.write(f"总参数量: {total_params:,}\n")
             f.write("=" * 100 + "\n")
+            f.write("\n【子模块结构】\n")
+            f.write("-" * 100 + "\n")
             for m in module_list:
                 f.write(f"{m['name']} | {m['type']} | 参数量: {m['params']:,} ({m['params_M']:.2f}M)\n")
+            f.write("\n【每层矩阵 Shape 信息】\n")
             f.write("=" * 100 + "\n")
-            f.write("按模块类型统计:\n")
+            for p in param_list:
+                f.write(f"{p['name']} | shape: {p['shape']} | dtype: {p['dtype']} | 参数量: {p['params']:,}\n")
+            f.write("\n【按模块类型统计】\n")
             f.write("-" * 100 + "\n")
             for module_type, stats in sorted(type_stats.items(), key=lambda x: -x[1]["params"]):
                 f.write(f"  {module_type}: 数量={stats['count']}, 参数量={stats['params']:,} ({stats['params']/1_000_000:.2f}M)\n")
