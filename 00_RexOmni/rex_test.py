@@ -3,9 +3,17 @@ from transformers import AutoProcessor
 from vllm import LLM, SamplingParams
 from qwen_vl_utils import process_vision_info
 import torch
+import logging
 from msprobe.pytorch import PrecisionDebugger, seed_all
 
 
+# 配置 logger
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+logger = logging.getLogger(__name__)
 
 # 在模型训练开始前固定随机性
 seed_all()
@@ -46,8 +54,6 @@ sampling_params = SamplingParams(
 # 3. 准备图像
 image = Image.open("/home/s00964975/00_Software/Rex-Omni/tutorials/detection_example/test_images/boys.jpg").convert("RGB")
 
-#image = Image.open("test.jpg").convert("RGB")
-
 # 4. 构建多模态消息
 messages = [
     {"role": "system", "content": "You are a helpful assistant"},
@@ -87,6 +93,7 @@ try:
     debugger.start(model=model)
     outputs = model.generate([llm_inputs], sampling_params=sampling_params)
 except Exception as e:
+    logger.exception(f" 生成文本时发生异常: {e}")
     # 关闭数据dump并落盘
     debugger.stop()
     debugger.step()
