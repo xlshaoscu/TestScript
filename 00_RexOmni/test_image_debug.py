@@ -96,7 +96,6 @@ model = LLM(
     tensor_parallel_size=1,
     enforce_eager=True,
     dtype=torch.float16,
-    vocab_size=151936,  # 显式设置词汇表大小
     tokenizer_mode="slow",  # 使用slow tokenizer
 )
 
