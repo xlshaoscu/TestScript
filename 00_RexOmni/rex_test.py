@@ -35,6 +35,7 @@ model = LLM(
     tensor_parallel_size=1,
     enforce_eager=True,
     dtype=torch.float16,
+    tokenizer_mode="slow",  # 使用slow tokenizer
 )
 
 processor = AutoProcessor.from_pretrained(
