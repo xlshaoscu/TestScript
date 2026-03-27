@@ -4,7 +4,7 @@ from vllm import LLM, SamplingParams
 from qwen_vl_utils import process_vision_info
 import torch
 import logging
-from msprobe.pytorch import PrecisionDebugger, seed_all
+#from msprobe.pytorch import PrecisionDebugger, seed_all
 import os
 
 
@@ -18,9 +18,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # 在模型训练开始前固定随机性
-seed_all()
+#seed_all()
 # 请勿将PrecisionDebugger的初始化流程插入到循环代码中
-debugger = PrecisionDebugger(config_path="./config.json", dump_path="./dump_path")
+#debugger = PrecisionDebugger(config_path="./config.json", dump_path="./dump_path")
 
 
 # 1. 初始化 vLLM 模型
