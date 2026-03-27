@@ -6,6 +6,8 @@ import torch
 import logging
 from msprobe.pytorch import PrecisionDebugger, seed_all
 import os
+from rex_omni.parser import parse_prediction
+from rex_omni import RexOmniVisualize
 
 
 os.environ["VLLM_ENABLE_V1_MULTIPROCESSING"] = "0"
@@ -236,6 +238,34 @@ try:
         print(f"\nFound {len(bboxes)} bounding box(es):")
         for i, bbox in enumerate(bboxes):
             print(f"  {i+1}. {bbox}")
+    # 8.1 解析预测结果
+    print("\n" + "=" * 60)
+    print("Parsing Predictions:")
+    print("=" * 60)
+    w, h = image.size
+    extracted_predictions = parse_prediction(
+        text=generated_text,
+        w=w,
+        h=h,
+        task_type="detection"
+    )
+    print(f"Image size: {w}x{h}")
+    print(f"Parsed predictions: {extracted_predictions}")
+
+    # 8.2 可视化结果
+    print("\n" + "=" * 60)
+    print("Visualizing Results:")
+    print("=" * 60)
+    vis_image = RexOmniVisualize(
+        image=image,
+        predictions=extracted_predictions,
+        font_size=20,
+        draw_width=5,
+        show_labels=True,
+    )
+    vis_output_path = os.path.join(os.path.dirname(__file__), "visualize_output.jpg")
+    vis_image.save(vis_output_path)
+    print(f"[INFO] Visualization saved to: {vis_output_path}")        
 
 except Exception as e:
     logger.error(f"Error processing results: {e}")
