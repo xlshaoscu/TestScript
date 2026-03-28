@@ -4,7 +4,6 @@ from vllm import LLM, SamplingParams
 from qwen_vl_utils import process_vision_info
 import torch
 import logging
-from msprobe.pytorch import PrecisionDebugger, seed_all
 import os
 from rex_omni.parser import parse_prediction
 from rex_omni import RexOmniVisualize
@@ -18,12 +17,6 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 logger = logging.getLogger(__name__)
-
-# 在模型训练开始前固定随机性
-seed_all()
-# 请勿将PrecisionDebugger的初始化流程插入到循环代码中
-debugger = PrecisionDebugger(config_path="./config.json", dump_path="./dump_path")
-
 
 # 1. 检查tokenizer和模型配置
 model_path = "/opt/data/models/IDEA-Research/Rex-Omni"
@@ -129,7 +122,7 @@ messages = [
                 "min_pixels": 16 * 28 * 28,
                 "max_pixels": 256 * 28 * 28,
             },
-            {"type": "text", "text": "Detect person, car. Output the bounding box coordinates in [x0, y0, x1, y1] format."}
+            {"type": "text", "text": "Detect person. Output the bounding box coordinates in [x0, y0, x1, y1] format."}
         ]
     }
 ]
