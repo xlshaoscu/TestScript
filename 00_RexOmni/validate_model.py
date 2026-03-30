@@ -123,6 +123,7 @@ class RexOmniValidator:
             tokenize=False,
             add_generation_prompt=True
         )
+        logger.info(f"text: {text}")
         logger.info(f"Prompt generated, length: {len(text)} chars")
 
         image_inputs, _ = process_vision_info(messages)
