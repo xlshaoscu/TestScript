@@ -161,9 +161,9 @@ class ClientSidePreprocessor:
         np_buffer = io.BytesIO()
         np.save(np_buffer, np_array, allow_pickle=False)
         np_buffer.seek(0)
-        
-        np_data = np_buffer.read()
-        final_tensor = torch.from_numpy(np.loads(np_data))
+
+        # Load directly from BytesIO buffer to avoid null byte issues
+        final_tensor = torch.from_numpy(np.load(np_buffer, allow_pickle=False))
         
         buffer = io.BytesIO()
         torch.save(final_tensor, buffer, pickle_protocol=4)
