@@ -1,0 +1,9 @@
+vllm serve /opt/data/models/IDEA-Research/Rex-Omni \
+    --max-model-len 40960 \
+    --gpu-memory-utilization 0.8 \
+    --dtype float16 \
+    --tokenizer-mode slow \
+    --trust-remote-code \
+    --host 0.0.0.0 \
+    --limit-mm-per-prompt '{"image": 10}' \
+    --port 8000
