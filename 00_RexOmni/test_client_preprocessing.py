@@ -348,7 +348,7 @@ def main():
     result_with_preprocessing = test_with_client_preprocessing(IMAGE_PATH)
 
     logger.info("-" * 60)
-    result_without_preprocessing = test_without_preprocessing(IMAGE_PATH)
+    # result_without_preprocessing = test_without_preprocessing(IMAGE_PATH)
 
     logger.info("=" * 60)
     logger.info("Comparison Results:")
