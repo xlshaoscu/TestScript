@@ -8,28 +8,28 @@ then send to standard vLLM server via image_embeds
 
 Usage:
     1. Start vLLM server with --enable-mm-embeds flag:
-       vllm serve /opt/data/models/IDEA-Research/Rex-Omni \\
-           --max-model-len 4096 \\
-           --gpu-memory-utilization 0.8 \\
-           --dtype float16 \\
-           --tokenizer-mode slow \\
-           --trust-remote-code \\
-           --limit-mm-per-prompt '{"image": 10}' \\
-           --enable-mm-embeds \\
-           --host 0.0.0.0 \\
+       vllm serve /opt/data/models/IDEA-Research/Rex-Omni \
+           --max-model-len 4096 \
+           --gpu-memory-utilization 0.8 \
+           --dtype float16 \
+           --tokenizer-mode slow \
+           --trust-remote-code \
+           --limit-mm-per-prompt '{"image": 10}' \
+           --enable-mm-embeds \
+           --host 0.0.0.0 \
            --port 8000
 
     2. Run this test script:
        python test_client_preprocessing.py
 """
 
-import os
 import io
 import base64
 import logging
 from typing import Dict, Any
 
 import torch
+import numpy as np
 import requests
 from PIL import Image
 from transformers import AutoProcessor
@@ -42,7 +42,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-BASE_URL = "http://localhost:8000"
+BASE_URL = "http://127.0.0.1:8000"
 MODEL_PATH = "/opt/data/models/IDEA-Research/Rex-Omni"
 IMAGE_PATH = "/home/s00964975/00_Software/Rex-Omni/tutorials/detection_example/test_images/boys.jpg"
 
@@ -131,11 +131,36 @@ class ClientSidePreprocessor:
         }
 
     def _tensor_to_base64(self, tensor: torch.Tensor) -> str:
-        """Convert tensor to base64 string"""
-        import pickle
+        """
+        Convert tensor to base64 string compatible with vLLM's ImageEmbeddingMediaIO
+        
+        Note: vLLM uses torch.load(buffer, weights_only=True) which requires:
+        1. Pure tensor data without custom class references (like PIL.Image.Image)
+        2. Standard torch serialization format
+        
+        We use numpy as intermediate format to ensure no PIL references are included.
+        """
+        if isinstance(tensor, (list, tuple)):
+            tensor = torch.stack(tensor)
+        
+        if not isinstance(tensor, torch.Tensor):
+            raise ValueError(f"Expected torch.Tensor, got {type(tensor)}")
+        
+        tensor = tensor.detach().cpu().contiguous().clone()
+        
+        np_array = tensor.numpy()
+        
+        np_buffer = io.BytesIO()
+        np.save(np_buffer, np_array, allow_pickle=False)
+        np_buffer.seek(0)
+        
+        np_data = np_buffer.read()
+        final_tensor = torch.from_numpy(np.loads(np_data))
+        
         buffer = io.BytesIO()
-        torch.save(tensor, buffer)
+        torch.save(final_tensor, buffer, pickle_protocol=4)
         buffer.seek(0)
+        
         return base64.b64encode(buffer.read()).decode("utf-8")
 
     def _get_grid_thw(self, tensor: torch.Tensor) -> list:
