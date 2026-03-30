@@ -118,8 +118,16 @@ class ClientSidePreprocessor:
         logger.info(f"Prompt generated, length: {len(text)} chars")
 
         image_inputs, _ = process_vision_info(messages)
-        
+
         logger.info(f"Image preprocessed, shape: {image_inputs.shape if hasattr(image_inputs, 'shape') else 'N/A'}")
+
+        # Convert PIL Images to tensor if needed
+        if isinstance(image_inputs, Image.Image):
+            # Single image
+            image_inputs = self.processor.image_processor(image_inputs, return_tensors="pt")["pixel_values"]
+        elif isinstance(image_inputs, (list, tuple)) and len(image_inputs) > 0 and isinstance(image_inputs[0], Image.Image):
+            # List of images
+            image_inputs = self.processor.image_processor(image_inputs, return_tensors="pt")["pixel_values"]
 
         image_embeds_base64 = self._tensor_to_base64(image_inputs)
         
