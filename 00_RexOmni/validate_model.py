@@ -134,6 +134,7 @@ class RexOmniValidator:
         }
 
         logger.info("Starting inference...")
+        logger.info(f"llm_inputs: {llm_inputs}")
         outputs = self.model.generate([llm_inputs], sampling_params=self.sampling_params)
         
         generated_text = outputs[0].outputs[0].text
