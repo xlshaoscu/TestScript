@@ -141,34 +141,26 @@ class ClientSidePreprocessor:
     def _tensor_to_base64(self, tensor: torch.Tensor) -> str:
         """
         Convert tensor to base64 string compatible with vLLM's ImageEmbeddingMediaIO
-        
+
         Note: vLLM uses torch.load(buffer, weights_only=True) which requires:
         1. Pure tensor data without custom class references (like PIL.Image.Image)
         2. Standard torch serialization format
-        
-        We use numpy as intermediate format to ensure no PIL references are included.
+
+        Direct torch.save should work as long as tensor is a plain torch.Tensor.
         """
         if isinstance(tensor, (list, tuple)):
             tensor = torch.stack(tensor)
-        
+
         if not isinstance(tensor, torch.Tensor):
             raise ValueError(f"Expected torch.Tensor, got {type(tensor)}")
-        
-        tensor = tensor.detach().cpu().contiguous().clone()
-        
-        np_array = tensor.numpy()
-        
-        np_buffer = io.BytesIO()
-        np.save(np_buffer, np_array, allow_pickle=False)
-        np_buffer.seek(0)
 
-        # Load directly from BytesIO buffer to avoid null byte issues
-        final_tensor = torch.from_numpy(np.load(np_buffer, allow_pickle=False))
-        
+        # Ensure tensor is clean for weights_only=True loading
+        tensor = tensor.detach().cpu().contiguous().clone()
+
         buffer = io.BytesIO()
-        torch.save(final_tensor, buffer, pickle_protocol=4)
+        torch.save(tensor, buffer, pickle_protocol=4, _use_new_zipfile_serialization=True)
         buffer.seek(0)
-        
+
         return base64.b64encode(buffer.read()).decode("utf-8")
 
     def _get_grid_thw(self, tensor: torch.Tensor) -> list:
