@@ -358,9 +358,9 @@ def main():
         content_with = result_with_preprocessing["response"]["choices"][0]["message"]["content"]
         logger.info(f"With preprocessing: {content_with}")
     
-    if "choices" in result_without_preprocessing.get("response", {}):
-        content_without = result_without_preprocessing["response"]["choices"][0]["message"]["content"]
-        logger.info(f"Without preprocessing: {content_without}")
+    # if "choices" in result_without_preprocessing.get("response", {}):
+    #     content_without = result_without_preprocessing["response"]["choices"][0]["message"]["content"]
+    #     logger.info(f"Without preprocessing: {content_without}")
 
     logger.info("=" * 60)
 
