@@ -15,7 +15,8 @@ res = requests.post("http://127.0.0.1:8000/v1/chat/completions", json={
         ]
     }],
     "temperature": 0,
-    "max_tokens": 40000
+    "max_tokens": 40000,
+    "skip_special_tokens": False
 })
 
 print(res.json())
