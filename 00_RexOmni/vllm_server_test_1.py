@@ -11,7 +11,7 @@ res = requests.post("http://127.0.0.1:8000/v1/chat/completions", json={
         "role": "user",
         "content": [
             {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{img}"}},
-            {"type": "text", "text": "Detect all persons. Output only [x0,y0,x1,y1] per line."}
+            {"type": "text", "text": "Detect person. Output the bounding box coordinates in [x0, y0, x1, y1] format."}
         ]
     }],
     "temperature": 0,
